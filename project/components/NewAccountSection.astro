@@ -1,0 +1,336 @@
+---
+import "../styles/accountSection.scss";
+const res = await fetch("http://localhost:3000/accounts");
+const accounts = await res.json();
+const users = [];
+accounts.map((account) => {
+  let totalAmont = 0;
+  account.transactions.map((transaction) => {
+    if (
+      transaction.type == "Withdraw" ||
+      (transaction.type == "Transfer" &&
+        transaction.accountId != transaction.accountIdTo)
+    ) {
+      totalAmont -= transaction.amount;
+    } else {
+      totalAmont += transaction.amount;
+    }
+  });
+  users.push({ userName: account.username, totalAmount: totalAmont });
+});
+---
+
+<div class="container">
+  <div class="messageBox">
+    <p class="p-message"></p>
+  </div>
+  <div class="messageBox">
+    <p class="p-message"></p>
+  </div>
+  <div class="newAccount">
+    <p class="p-newAccount">New Account:</p>
+    <input class="addAccount addAccount-input" type="text" name="text" />
+    <button class="addAccount addAccount-btn">Add new account</button>
+  </div>
+  <h1>Account summary</h1>
+  <div class="block">
+    <ul class="accounts">
+      <li><p class="p-left">Account</p><p>Balance</p></li>
+      {
+        users.map((user) => (
+          <li>
+            <>
+              <p class="p-left">{user.userName}</p>
+              <p class="p-right">{user.totalAmount}</p>
+            </>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</div>
+
+<style lang="scss">
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family:
+      system-ui,
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      Roboto,
+      Oxygen,
+      Ubuntu,
+      Cantarell,
+      "Open Sans",
+      "Helvetica Neue",
+      sans-serif;
+  }
+  .container {
+    position: relative;
+    display: flex;
+    width: 500px;
+    margin-top: 60px;
+    flex-direction: column;
+  }
+  
+  .p-message {
+    font-weight: bold;
+    font-size: 18px;
+  }
+  .newAccount {
+    align-self: flex-end;
+  }
+  #accounts-header {
+    background-color: aliceblue;
+  }
+  .p-newAccount {
+    display: inline-block;
+  }
+
+  .addAccount {
+    padding: 5px;
+    &-input {
+      border: none;
+      border: 1px solid #000000;
+      border-radius: 3px;
+      height: 25px;
+    }
+    &-btn {
+      background-color: aliceblue;
+      border: solid 2px #000000;
+      border-radius: 3px;
+      line-height: 3px;
+      height: 28px;
+      font-size: 15px;
+      &:hover {
+        cursor: pointer;
+      }
+    }
+  }
+  .block {
+    margin-top: 10px;
+  }
+  .accounts {
+    list-style: none;
+    max-height: 115px;
+    overflow: auto;
+    max-height: 115px;
+    overflow: auto;
+    background-color: aliceblue;
+  }
+  li {
+    display: flex;
+    border-bottom: 2px solid rgb(200, 225, 247);
+    padding: 3px;
+    max-width: 500px;
+    max-width: 500px;
+    .p-left {
+      width: 250px;
+    }
+    .p-right {
+      max-width: 250px;
+    }
+  }
+  .messageBox {
+    position: absolute;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    top: -50px;
+    right: 50px;
+    width: 365px;
+    height: 30px;
+    border: 2px dashed;
+    .p-message {
+      font-size: 19px;
+    }
+    .p-right {
+      max-width: 250px;
+    }
+  }
+  
+  @media screen and (max-width: 1100px) {
+    
+    h1 {
+      text-align: center;
+    }
+    .newAccount {
+      display: flex;
+      flex-direction: row;
+      align-items: baseline;
+    }
+    
+    .p-newAccount {
+      padding-left: 30px;
+      padding-right: 20px;
+    }
+    
+    .addAccount {
+      margin-right: 20px;
+      margin-bottom: 10px;
+    }
+}
+
+@media screen and (max-width: 550px) {
+  .container {
+    width: 450px;
+  }
+  
+  .addAccount {
+  
+    margin-bottom: 10px;
+    &-btn {
+      margin-right: 50px;
+      font-size: 0;
+    }
+    &-btn:before {
+      font-size: 15px;
+      content: "Add";
+    }
+  }
+  
+  .p-newAccount {
+    padding-left: 20px;
+    padding-right: 10px;
+  }
+}
+
+@media screen and (max-width: 470px) {
+  .container {
+    width: 360px;
+  }
+  
+  .messageBox {
+    right: 0px;
+  }
+  
+  .addAccount {
+    &-btn {
+      margin-right: 10px;
+      font-size: 0;
+    }
+  }
+  
+  .addAccount {
+    margin-right: 14px;
+  }
+}
+</style>
+
+<script
+  is:inline
+  src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+></script>
+
+<script>
+  () => {};
+  import { gsap } from "gsap";
+  const baseURL = "http://localhost:3000";
+  const message = $(".messageBox");
+  const timeline = gsap.timeline({ repeat: -1 });
+  $(".addAccount-btn").on("click", async () => {
+    const inputValue = $(".addAccount-input").val();
+    const res = await fetch(`${baseURL}/accounts`);
+    const accountsList = await res.json();
+    const alreadyHasThisAccount = accountsList.filter((account) => {
+      return account.username == inputValue;
+    });
+    const showMessage = (typeMessage) => {
+      const typesOfMessage = {
+        success: {
+          message: "!! Create an account successfully !!",
+          messageColor: "rgb(0, 160, 0)",
+        },
+        duplicate: {
+          message: "!! This username has been registered !!",
+          messageColor: "#ff0000",
+        },
+        empty: {
+          message: "!! Need to type username !!",
+          messageColor: "#ff0000",
+        },
+        error: {
+          message:
+            "!! Fail to create an account !!",
+          messageColor: "#ff0000",
+        },
+      };
+      message
+        .css("display", "flex")
+        .css("border-color", `${typesOfMessage[typeMessage].messageColor}`);
+      timeline
+        .to(message, { scale: 1.04, duration: 0.5 })
+        .to(message, { scale: 1, duration: 0.7 });
+      $(".p-message")
+        .text(`${typesOfMessage[typeMessage].message}`)
+        .css("color", `${typesOfMessage[typeMessage].messageColor}`);
+      setTimeout(() => {
+        message.css("display", "none");
+      }, 5000);
+    };
+    if (
+      inputValue != null &&
+      inputValue != "" &&
+      alreadyHasThisAccount.length == 0
+    ) {
+      const res = await fetch(`${baseURL}/accounts`, {
+        method: "POST",
+        body: JSON.stringify({ newAccount: `${inputValue}` }),
+        headers: { "Content-Type": "application/json" },
+      });
+      if (!res.ok) {
+        showMessage("error");
+        throw new Error(`${res.status} - ${res.statusText}`);
+      } else {
+        $(".accounts").append(
+          `<li><p class="p-left">${inputValue}</p><p>${0}</p></li>`
+        );
+        showMessage("success");
+      }
+    } else if (inputValue == "") {
+      showMessage("empty");
+    } else if (alreadyHasThisAccount.length > 0) {
+      showMessage("duplicate");
+    }
+
+    $(".addAccount-input").val("");
+
+  });
+  $("#execution-button").on("click", () => {
+    const inputValue = parseInt($("#input-amount").val().toString());
+    const checkedDeposit = $("#radio-deposit").prop("checked");
+    const checkedWithdraw = $("#radio-withdraw").prop("checked");
+    const checkedTransfer = $("#radio-transfer").prop("checked");
+    const getPersonInfo = (index) => {
+      const currentBalance = parseInt($(".accounts")[0].children[index].children[1].textContent)
+      return {userCurrentBalance:currentBalance, userId:index}
+    }
+    const onePersonTransaction = () => {
+      const userNameIndex = parseInt($("#account-pulldown").val().toString())
+      return getPersonInfo(userNameIndex)
+    }
+    const twoPeopleTransaction = () => {
+      const user1NameIndex = parseInt($("#from-pulldown").val().toString())
+      const user2NameIndex = parseInt($("#to-pulldown").val().toString())
+      return { userFrom:getPersonInfo(user1NameIndex), userTo:getPersonInfo(user2NameIndex)}
+    }
+    switch(true) {
+      case checkedDeposit:
+        const result = onePersonTransaction()
+        $(".accounts")[0].children[result.userId].children[1].textContent = `${result.userCurrentBalance + inputValue}`
+        break;
+      case checkedWithdraw:
+        const result2 = onePersonTransaction()
+        $(".accounts")[0].children[result2.userId].children[1].textContent = `${result2.userCurrentBalance - inputValue}`
+        break;
+      case checkedTransfer:
+        const result3 = twoPeopleTransaction()
+        $(".accounts")[0].children[result3.userFrom.userId].children[1].textContent = `${result3.userFrom.userCurrentBalance - inputValue}`
+        $(".accounts")[0].children[result3.userTo.userId].children[1].textContent = `${result3.userTo.userCurrentBalance + inputValue}`
+      break;
+    }
+  });
+</script>

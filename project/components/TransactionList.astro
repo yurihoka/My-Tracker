@@ -1,0 +1,436 @@
+---
+import "../styles/filterSection.scss";
+const res = await fetch("http://localhost:3000/accounts");
+const lists = await res.json();
+console.log(lists);
+---
+<div class="filter-section">
+  <div class="filter-items">
+    <p id="filter-title">Filter by account:</p>
+    <div class="fileter-flexbox">
+      <select id="filter-pulldown" class="filter-pulldown">
+        <option value="0" disabled selected>Select a filter</option>
+        <option value="1">Account</option>
+        <option value="2">Type</option>
+        <option value="3">Category</option>
+      </select>
+      <select id="filter-account" class="filter-pulldown filter-account">
+        <option value="0" selected>All accounts</option>
+      </select>
+      <select id="filter-type" class="filter-pulldown filter-type">
+        <option value="0" selected>All types</option>
+      </select>
+      <select id="filter-category" class="filter-pulldown filter-category">
+        <option value="0" selected>All categories</option>
+      </select>
+    </div>
+  </div>
+  <div class="filter-items"></div>
+  <div class="transaction-list">
+    <table id="transaction-data">
+      <thead>
+        <tr>
+          <th id="transaction-id">Id</th>
+          <th id="transaction-user">Username</th>
+          <th>Type</th>
+          <th>Category</th>
+          <th id="transaction-description">Description</th>
+          <th>Amount</th>
+          <th>From</th>
+          <th>To</th>
+        </tr>
+        <tbody>
+        </tbody>  
+      </thead>
+    </table>
+  </div>
+</div>
+
+<style lang="scss">
+
+  .filter-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .filter-pulldown {
+    padding: 5px;
+    border: 1px solid rgb(218, 216, 216);
+    border-radius: 3px;
+    margin-right: 10px;
+  }
+  .filter-items {
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    gap: 15px;
+    width: 90%;
+  }
+
+  .fileter-flexbox{
+    display: flex;
+  }
+
+  .transaction-list {
+    background-color: rgb(200, 225, 247);
+    display: flex;
+    justify-content: center;
+    margin-bottom: 50px;
+    width: 90%;
+  }
+
+  .filter-account,
+  .filter-type,
+  .filter-category {
+    display: none;
+  }
+  #transaction-data {
+    width: 100%;
+    table-layout: fixed;
+  }
+  th{
+    background-image: url('../src/img/sort-icon.png');
+    background-size: 13px;
+    background-repeat: no-repeat;
+    background-position: center right;
+    font-size: 15px;
+    
+  }
+
+  @media screen and (max-width: 1100px) {
+
+    th {
+      width: 100%;
+      table-layout: auto;
+    }
+
+    .filter-items {
+      justify-content: center;
+    }
+  }
+
+  @media screen and (max-width: 900px) {
+
+    .filter-section {
+      display: flex;
+      justify-content: center;
+    }
+    
+    .transaction-list {
+      overflow: auto;
+    }
+
+    #transaction-data {
+      width: 100%;
+      font-size: 14px;
+    }
+
+    thead, tbody {
+      display: table;
+      white-space: nowrap;
+      width: 800px;
+    }
+
+    tbody {
+      overflow-x: scroll;
+      overflow-y: scroll;
+    }
+
+    th, td {
+      width: 110px;
+    }
+
+    #transaction-user {
+      font-size: 0;
+    }
+
+    #transaction-user:before {
+      content: "User";
+      font-size: 15px;
+    }
+
+    #transaction-description {
+      font-size: 0;
+    }
+
+    #transaction-description:before {
+      content: "Desc";
+      font-size: 15px;
+    }
+
+  }
+
+  @media screen and (max-width: 460px) {
+
+    .fileter-flexbox {
+      margin-top: -20px;
+    }
+
+    .filter-items {
+      flex-direction: column; 
+    }
+  }
+
+</style>
+<script
+  is:inline
+  src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.1/js/jquery.tablesorter.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.1/js/extras/jquery.metadata.min.js"></script>
+<script>
+  const baseURL = "http://localhost:3000";
+
+  // [Event] Reload screen
+  $(window).on("load", () => {
+    addRow();
+  });
+
+  // [Event] Executing transction
+  $("#execution-button").on("click", () => {
+    addRow();
+  });
+
+  // [Event] Click filter pulldown
+  $("#filter-pulldown").on("change", () => {
+    addRow();
+    $(".filter-account").val(0);
+    $(".filter-type").val(0);
+    $(".filter-category").val(0);
+  });
+
+  // [Event] Add new account 
+  $(".addAccount-btn").on("click", () => {
+    addRow();
+  });
+
+  // [Event] Add category 
+  $(".category-button").on("click", () => {
+    addRow();
+  });
+
+  // [Event] Select account filter 
+  $("#filter-account").on("change", async () => {
+    let select_text = $("#filter-account  option:selected").text();
+    let default_text = "All accounts";
+    displayFilter(select_text, default_text, 1);
+  });
+
+  // [Event] Select transaction type filter
+  $("#filter-type").on("change", async () => {
+    let select_text = $("#filter-type option:selected").text();
+    let default_text = "All types";
+    displayFilter(select_text, default_text, 2);
+  });
+
+  // [Event] Select category filter
+  $("#filter-category").on("change", async () => {
+    let select_text = $("#filter-category  option:selected").text();
+    let default_text = "All categories";
+    displayFilter(select_text, default_text, 3);
+  });
+
+  // [Event] Resize screen for responsive
+  $(window).on("resize", () => {
+    if(document.body.scrollWidth <= 900){
+      $("th").css("width", "110px");
+      $("td").css("width", "110px");
+    }
+  })
+
+  // [Function] Display filtered transaction bills
+  const displayFilter = (select_text, default_text, condition) => {
+
+    $.each($(".display-data"), (i, el) => {
+      if (select_text == "" || select_text == default_text) {
+        $(el).css("display", "table-row");
+        return true;
+      }
+
+      let row_text = $(el).html();
+
+      let splitCharacter = "";
+      if(document.body.scrollWidth > 900){
+        splitCharacter = '</td><td class="item">'
+      } else {
+        splitCharacter = '</td><td class="item" style="width: 110px;">'
+      }
+
+      let row_split = row_text.split(splitCharacter);
+
+      if (row_split[condition] == select_text) {   
+        $(el).css("display", "table-row");
+      } else {
+        $(el).css("display", "none");
+      }
+
+    });
+  };
+
+  // [Function] Display all transaction bills and organise pull down filter
+  const addRow = async () => {
+    setTimeout(() => { 
+  
+      // Get transaction data from server
+      $.ajax({
+        url: `${baseURL}/accounts`,
+        type: "GET",
+        success: function (accounts) {
+          const value = $("#filter-pulldown").val();
+
+          // Get category data from server
+          const getCategoryData = async () => {
+            const res = await fetch("http://localhost:3000/categories");
+            const categories = await res.json();
+            return categories
+          }
+          // Organise each filter
+          // 1. Account
+          if (value == 1) {
+            $("#filter-account").css("display", "block");
+            $("#filter-type").css("display", "none");
+            $("#filter-category").css("display", "none");
+            $(".account-list").remove();
+            accounts.map((account) => {
+              $("#filter-account").append(
+                '<option class="account-list" value="' +
+                  account.id +
+                  '">' +
+                  account.username +
+                  "</option>"
+              );
+            });
+
+          // 2. Transaction type (Deposit/Withdraw/Transfer)
+          } else if (value == 2) {
+            $("#filter-account").css("display", "none");
+            $("#filter-type").css("display", "block");
+            $("#filter-category").css("display", "none");
+            $(".type-list").remove();
+            $("#filter-type").append(
+              '<option class="type-list" value="' + "0" + '">' + "Deposit" + "</option>"
+            );
+            $("#filter-type").append(
+              '<option class="type-list" value="' + "1" + '">' + "Withdraw" + "</option>"
+            );
+            $("#filter-type").append(
+              '<option class="type-list" value="' + "2" + '">' + "Transfer" + "</option>"
+            );
+
+          // 3. Category
+          } else if (value == 3) {
+            $("#filter-account").css("display", "none");
+            $("#filter-type").css("display", "none");
+            $("#filter-category").css("display", "block");
+            $(".category-list").remove();
+            getCategoryData().then(categoryData => {
+              
+              let deleteCounter = 0;
+              for (let i = 0; i < categoryData.length; i++) {
+                if (categoryData[i].name !== null) {
+
+                  if(!(categoryData[i].name == "(DELETED)" && deleteCounter >= 1)){
+
+                    if(!(categoryData[i].name == "(DELETED)")){
+                      $("#filter-category").append(
+                      '<option class="category-list" value="' +
+                      (categoryData[i].id + 1) +
+                      '">' +
+                      categoryData[i].name +
+                      "</option>"
+                      );
+                    
+                    } else {
+                      deleteCounter += 1;
+                    }
+
+                  }                  
+                }
+              }
+
+              if(deleteCounter != 0){
+                $("#filter-category").append(
+                  '<option class="category-list" value="' +
+                  0 +
+                  '">' +
+                  "(DELETED)" +
+                  "</option>"
+                );
+              }
+
+              $(".category-list").val(0);
+            }
+          )}
+        
+          $(".display-data").remove();
+          getCategoryData().then(categoryData => {
+            // Display transaction list on screen
+            accounts.map((el) => {
+              el.transactions.map((transaction) => {
+                let accountId = transaction.id;
+                let accountName = el.username;
+                let transactionType = transaction.type;
+                let category = categoryData[transaction.categoryId - 1].name;
+                let description = transaction.description;
+                let amount = transaction.amount;
+
+                let accountFromIndex = 0;
+                let accountToIndex = 0;
+
+                if(transactionType == "Transfer"){
+                  accountFromIndex = transaction.accountIdFrom - 1;
+                  accountToIndex = transaction.accountIdTo - 1;
+                } else {
+                  accountFromIndex = transaction.accountId - 1;
+                  accountToIndex = transaction.accountId - 1;
+                }
+
+                let accountFrom = accounts[accountFromIndex].username;
+                let accountTo = accounts[accountToIndex].username;
+
+                $("tbody").append(  
+                "<tr class='display-data'><td class='item'>" +
+                  accountId +
+                  "</td><td class='item'>" +
+                  accountName +
+                  "</td><td class='item'>" +
+                  transactionType +
+                  "</td><td class='item'>" +
+                  category +
+                  "</td><td class='item'>" +
+                  description +
+                  "</td><td class='item'>" +
+                  amount +
+                  "</td><td class='item'>" +
+                  accountFrom +
+                  "</td><td class='item'>" +
+                  accountTo +
+
+                  "</td></tr>"
+                );
+              }
+            )
+
+            // Adjust data size
+            if(document.body.scrollWidth <= 900){
+              $("th").css("width", "110px");
+              $("td").css("width", "110px");
+            }
+
+            // Add sort function
+            $("#transaction-data").tablesorter();
+            $("#transaction-data").trigger("update");
+            $("#transaction-id").trigger("click");;
+          });
+        })
+      },error: function (error) {
+        console.error("Error fetching accounts:", error);
+      },
+      });
+        
+    }, 50);
+  };
+
+</script>

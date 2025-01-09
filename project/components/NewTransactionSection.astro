@@ -1,0 +1,1055 @@
+---
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <title>NewTransactionSection</title>
+  </head>
+  <body>
+    <main>
+      <div class="messagebox" id="error-radio">!! Need to select one transaction type !!</div>
+      <div class="messagebox" id="error-items">!! Need to fill out all items !!</div>  
+      <div class="messagebox" id="error-amount">!! Amount exceeds available balance !!</div>  
+      <div class="messagebox" id="error-category1"></div>
+      <div class="messagebox" id="error-category2">!! Input new category name !!</div>
+      <div class="messagebox" id="success-confirmation">Click "Add transaction button"</div>        
+      <div class="messagebox" id="success-transaction">Transaction added sccessfully</div>  
+      <div class="flexbox" id="flexbox-transaction">
+        <p id="transaction-title">New Transaction &nbsp;</p>
+        <div class="flexbox" id="flexbox-radio">
+          <div>
+            <input
+              type="radio"
+              id="radio-deposit"
+              name="transaction"
+              value="Deposit"
+            />
+            <label for="Deposit">Deposit</label>
+          </div>
+          <div>
+            <input
+              type="radio"
+              id="radio-withdraw"
+              name="transaction"
+              value="Withdraw"
+            />
+            <label for="Withdraw">Withdraw</label>
+          </div>
+          <div>
+            <input
+              type="radio"
+              id="radio-transfer"
+              name="transaction"
+              value="Transfer"
+            />
+            <label for="Transfer">Transfer</label>
+          </div>
+        </div>
+      </div>
+      <div class="flexbox" id="flexbox-account">
+        <p id="account-title">Account: &nbsp;</p>
+        <div class="flexbox" id="flexbox-pulldown">
+          <select class="pulldown" id="account-pulldown">
+            <option value="0" disabled selected>Select an account &nbsp;</option>
+          </select>
+  
+          <div  class="flexbox" id="flexbox-from">
+            <p class="transfer-title" id="from-title">From: &nbsp;</p>
+            <select class="pulldown" id="from-pulldown">
+              <option value="0" disabled selected>Select an account &nbsp;</option>
+            </select>
+          </div>
+  
+          <div  class="flexbox" id="flexbox-to">
+            <p class="transfer-title" id="to-title">To: &nbsp;</p>
+            <select class="pulldown" id="to-pulldown">
+              <option value="0" disabled selected>Select an account &nbsp;</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="flexbox" id="flexbox-category">
+        <p id="category-title">Category: &nbsp;</p>
+        <div  class="flexbox" id="flexbox-select">
+          <select class="pulldown" id="category-pulldown">
+            <option value="0" disabled selected>Select a category &nbsp;</option>
+            <option value="0">+ New Category</option>
+          </select>
+          <input type="text" id="input-category" name="newcategory" />
+          <button class="category-button" id="add-button">Add new category</button>
+          <button class="category-button" id="delete-button">Delete category</button>
+        </div>
+      </div>
+      <div class="flexbox" id="flexbox-descamount">
+        <div  class="flexbox" id="flexbox-description">
+          <p id="description-title">Description: &nbsp;</p>
+          <input type="text" class="transaction-input" id="input-description" name="description" />
+        </div>
+        <div  class="flexbox" id="flexbox-amount">
+          <p id="amount-title">Amount: &nbsp;</p>
+          <input type="number" class="transaction-input" id="input-amount" name="amount" min="1" max="10000" step="10"/>
+        </div>
+      </div>
+      <div class="flexbox" id="flexbox-transbutton">
+        <button class="transaction-button" id="confirmation-button">Confirm transaction</button>
+        <button class="transaction-button" id="execution-button" disabled>Add transaction</button>
+      </div>  
+    </main>
+  </body>
+</html>
+
+<style is:global>
+  body {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin: 0;
+  }
+  
+  main {
+    position: relative;
+    width: 540px;
+  }
+  .messagebox{
+    position: absolute;
+    margin-top: 18px;
+    margin-left: 18px;
+    width: 350px; 
+    height: 28px;
+    line-height: 28px;
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+  }
+  
+  #error-radio{
+    display: none;
+    border: dashed 2px #ff0000;
+    color: #ff0000;
+  }
+
+  #error-items{
+    display: none;
+    border: dashed 2px #ff0000;
+    color: #ff0000;
+  }
+  
+  #error-amount{
+    border: dashed 2px #ff0000;
+    color: #ff0000;
+  }
+
+  #error-category1{
+    border: dashed 2px #ff0000;
+    color: #ff0000;
+  }
+
+  #error-category2{
+    border: dashed 2px #ff0000;
+    color: #ff0000;
+  }
+
+  #success-confirmation{
+    display: none;
+    border: dashed 2px #008000;
+    color: #008000;
+  }
+
+  #success-transaction{
+    display: none;
+    border: dashed 2px #008000;
+    color: #008000;
+  }
+  .flexbox {
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+    margin-bottom: -10px;
+  }
+
+  #flexbox-transaction {
+    margin-top: 50px;
+  }
+
+  #transaction-title {
+    font-weight: bold;
+  }
+
+  #amount-title {
+    padding-left: 15px;
+  }
+
+  .pulldown {
+    height: 25px;
+  }
+
+  #account-pulldown{
+    display: block;
+  }
+
+  #flexbox-from{
+    margin-bottom: 10px;
+  }
+
+  #from-title{
+    display: none;    
+  }
+
+  #to-title{
+    display: none;
+    padding-left: 15px;    
+  }
+
+  #from-pulldown{
+    display: none;
+  }
+
+  #to-pulldown{
+    display: none;
+  }
+
+  #input-category {
+    display: none;
+    margin-left: 10px;
+    width: 150px;
+    height: 20px;
+    border-radius: 3px;
+  }
+
+  .category-button {
+    cursor: pointer;
+    margin-left: 10px;
+    width: 150px;
+    height: 26px;
+    border: solid 2px #000000;
+    border-radius: 3px;
+    font-size: 15px;
+  }
+
+  #add-button {
+    display: none;
+    background: aliceblue;
+  }
+
+  #delete-button {
+    display: none;
+    background: #00cc66;
+  }
+
+  #flexbox-description {
+    margin-bottom: 0px;
+  }
+
+  #input-description {
+    width: 150px;
+    height: 20px;
+  }
+
+  #input-amount {
+    width: 100px;
+    height: 20px;
+  }
+
+  .transaction-button {
+    cursor: pointer;
+    margin-top: 15px;
+    margin-right: 15px;
+    width: 200px;
+    height: 30px;
+    border-radius: 3px;
+    font-size: 18px;
+    background: aliceblue;
+  }
+
+  .confirmation-button{
+    border: solid 2px #000000;
+  }
+
+  @media screen and (max-width: 1100px) {
+    main{
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    #account-title {
+      padding-left: 10px;
+    }
+
+  }
+
+  @media screen and (max-width: 900px) {
+
+    body {
+      align-items: center;
+    }
+  }
+  @media screen and (max-width: 600px) {
+    main{
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .flexbox {
+      flex-direction: column;
+    }
+
+    #flexbox-radio {
+      flex-direction: row;
+    }
+
+    #flexbox-transaction {
+      flex-direction: row;
+    }
+    
+    #flexbox-account {
+      flex-direction: row;
+    }
+    #flexbox-pulldown {
+      flex-direction: row;
+    }
+
+    #flexbox-from {
+      flex-direction: row;
+    }
+
+    #flexbox-to {
+      flex-direction: row;
+    }
+
+    #flexbox-category {
+      flex-direction: row;
+    }
+
+    #flexbox-select {
+      flex-direction: row;
+    }
+
+    #flexbox-descamount {
+      display: block;
+      flex-direction: row;
+    }
+
+    #flexbox-description {
+      display: flex;
+      flex-direction: row;
+      margin-bottom: -10px;
+    }
+
+    #description-title {
+      padding-left: 10px;
+    }
+
+    #flexbox-amount {
+      display: flex;
+      flex-direction: row;
+    }
+
+    #amount-title {
+      padding-left: 35px;
+    }
+
+    #flexbox-amount {
+      margin-bottom: 0px;
+    }
+
+    #flexbox-transbutton {
+      flex-direction: row;
+    }
+
+  }
+
+  @media screen and (max-width: 550px) {
+    main{
+      width: 450px;
+    }
+  
+    #flexbox-category {
+      width: 450px;
+      justify-content: center;
+    }
+
+    .category-button{
+      width: 60px;
+      font-size: 0;
+    }
+
+    #add-button:before{
+      font-size: 15px;
+      content: "Add";
+    }
+
+    #delete-button:before{
+      font-size: 15px;
+      content: "Delete";
+    }
+
+  }
+
+  @media screen and (max-width: 460px) {
+
+    main {
+      width: 365px;
+    }
+
+    #flexbox-category {
+      width: 365px;
+    }
+
+
+    .messagebox {
+      margin-right: 18px;
+    }
+
+    #transaction-title {
+      margin-bottom: 10px;
+    }
+
+    #flexbox-radio {
+      margin-bottom: 2px;
+    }   
+
+    #flexbox-transaction {
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: -5px;
+      transform: translate(0, -7px);
+    }
+
+    #flexbox-account {
+      flex-direction: row;
+    }
+
+    #flexbox-from {
+      flex-direction: row;
+      margin: -10px;
+    }
+    #flexbox-to {
+      flex-direction: row;
+      margin-bottom: 10px;
+    }
+
+    #to-title {
+      padding-right: 6px;
+    }
+
+    #flexbox-category{
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    #category-title {
+    }
+    #category-select {
+      margin-top: -10px;
+      margin-bottom: 10px;
+    }
+
+    #flexbox-transbutton {
+      flex-direction: column;
+      margin-left: 10px;
+    }
+
+
+  }
+
+</style>
+
+<script
+  is:inline
+  src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+></script>
+
+<script>
+  import { gsap } from "gsap";
+  import { addCategory } from "../../backend/src/categories.js";
+  const baseURL = "http://localhost:3000";
+  const error1 = $('#error-radio');
+  const error2 = $('#error-items');
+  const error3 = $("#error-amount");
+  const error4 = $("#error-category1");
+  const error5 = $("#error-category2");
+	const messageTimeline = gsap.timeline({repeat:-1});
+
+  // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  // [Event] Switch pulldown (Transfer ⇔ Account) 
+  // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++  
+  // 1.Deposit
+  $("#radio-deposit").on("click", function () {
+    
+    $("#from-title").css("display", "none");
+    $("#to-title").css("display", "none");
+    $("#from-pulldown").css("display", "none");
+    $("#to-pulldown").css("display", "none");
+    $("#account-title").css("display", "block");
+    $("#account-pulldown").css("display", "block");
+
+    $("#input-category").css("display", "none");
+    $("#add-button").css("display", "none");
+    $("#delete-button").css("display", "none");
+
+    $("#error-radio").css("display", "none");
+    $("#error-items").css("display", "none");
+    $("#error-amount").css("display", "none");  
+    $("#error-category1").css("display", "none");
+    $("#error-category2").css("display", "none");
+    $("#success-confirmation").css("display", "none");
+    $("#success-transaction").css("display", "none");
+
+    $("#account-pulldown").val("0");    
+    $("#from-pulldown").val("0");
+    $("#to-pulldown").val("0");
+    $("#category-pulldown").val("0");
+    $("#input-description").val(null);
+    $("#input-amount").val(null);
+  })
+  
+  // 2.Withdraw  
+  $("#radio-withdraw").on("click", function () {
+    
+    $("#from-title").css("display", "none");
+    $("#to-title").css("display", "none");
+    $("#from-pulldown").css("display", "none");
+    $("#to-pulldown").css("display", "none");
+    $("#account-title").css("display", "block");
+    $("#account-pulldown").css("display", "block");
+
+    $("#input-category").css("display", "none");
+    $("#add-button").css("display", "none");
+    $("#delete-button").css("display", "none");
+
+    $("#error-radio").css("display", "none");
+    $("#error-items").css("display", "none");
+    $("#error-amount").css("display", "none"); 
+    $("#error-category1").css("display", "none");
+    $("#error-category2").css("display", "none");
+    $("#success-confirmation").css("display", "none");   
+    $("#success-transaction").css("display", "none");
+
+    $("#account-pulldown").val("0");    
+    $("#from-pulldown").val("0");
+    $("#to-pulldown").val("0");
+    $("#category-pulldown").val("0");
+    $("#input-description").val(null);
+    $("#input-amount").val(null);
+  })
+  
+  // 3.Transfer
+  $("#radio-transfer").on("click", function () {
+
+    $("#account-title").css("display", "none");
+    $("#account-pulldown").css("display", "none");
+    $("#from-title").css("display", "block");
+    $("#to-title").css("display", "block");
+    $("#from-pulldown").css("display", "block");
+    $("#to-pulldown").css("display", "block");
+
+    $("#input-category").css("display", "none");
+    $("#add-button").css("display", "none");
+    $("#delete-button").css("display", "none");
+
+    $("#error-radio").css("display", "none");
+    $("#error-items").css("display", "none");
+    $("#error-amount").css("display", "none");  
+    $("#error-category1").css("display", "none");
+    $("#error-category2").css("display", "none");
+    $("#success-confirmation").css("display", "none");  
+    $("#success-transaction").css("display", "none");
+
+    $("#account-pulldown").val("0");    
+    $("#from-pulldown").val("0");
+    $("#to-pulldown").val("0");
+    $("#category-pulldown").val("0");
+    $("#input-description").val(null);
+    $("#input-amount").val(null);
+  })
+  
+  
+  // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  // [Event] Get account information 
+  // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  $(window).on("load", async () => {
+    getAccountInfo();
+
+    $("#error-radio").css("display", "none");
+    $("#error-items").css("display", "none");
+    $("#error-amount").css("display", "none");   
+    $("#error-category1").css("display", "none");
+    $("#error-category2").css("display", "none"); 
+    $("#success-confirmation").css("display", "none");
+    $("#success-transaction").css("display", "none");
+
+  });
+  $(".addAccount-btn").on("click", async () => {
+    getAccountInfo();
+
+    $("#error-radio").css("display", "none");
+    $("#error-items").css("display", "none");
+    $("#error-amount").css("display", "none");  
+    $("#error-category1").css("display", "none");
+    $("#error-category2").css("display", "none");
+    $("#success-confirmation").css("display", "none");  
+    $("#success-transaction").css("display", "none");
+
+  });
+
+  const getAccountInfo = () => {
+
+    setTimeout(() => {
+      $.ajax({
+        url: `${baseURL}/accounts`,
+        type: "GET",
+        success: function (result) {
+    
+          // Delete all current pulldown items
+          $("#account-pulldown").children().remove();
+          $("#from-pulldown").children().remove();
+          $("#to-pulldown").children().remove();
+    
+          // Create default pulldown items
+          $("#account-pulldown").append(
+            '<option value="0" disabled selected>Select an account &nbsp;</option>'
+          );
+          $("#from-pulldown").append(
+            '<option value="0" disabled selected>Select an account &nbsp;</option>'
+          );
+          $("#to-pulldown").append(
+            '<option value="0" disabled selected>Select an account &nbsp;</option>'
+          );
+    
+          // Add remaining pulldown items
+          for (let i = 0; i < result.length; i++) {
+            
+            let accountId = result[i].id;
+            let accountName = result[i].username;
+            
+            $("#account-pulldown").append(
+              '<option value="' + accountId + '">' + accountName + "</option>"
+            );
+            $("#from-pulldown").append(
+              '<option value="' + accountId + '">' + accountName + "</option>"
+            );
+            $("#to-pulldown").append(
+              '<option value="' + accountId + '">' + accountName + "</option>"
+            );
+      
+          }
+                
+        },
+        error: function (error) {
+        console.error("Error fetching accounts:", error);
+        },
+      });
+    
+    }, 500);
+
+  }
+
+
+  // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  // [Event] Delete message when selecting account information 
+  // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  $("#account-pulldown").on("change", function () {
+
+    $("#error-radio").css("display", "none");
+    $("#error-items").css("display", "none");
+    $("#error-amount").css("display", "none");  
+    $("#error-category1").css("display", "none");
+    $("#error-category2").css("display", "none");
+    $("#success-confirmation").css("display", "none");  
+    $("#success-transaction").css("display", "none");
+
+  });
+
+
+  // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  // [Event] Control display of category input box and button
+  // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  $("#category-pulldown").on("change", function () {
+    let value = $("#category-pulldown").val();
+
+    if (value == "0") {
+      $("#input-category").css("display", "block");
+      $("#input-category").val("");
+      $("#add-button").css("display", "block");
+      $("#delete-button").css("display", "none");
+    } else {
+      $("#input-category").css("display", "none");
+      $("#add-button").css("display", "none");
+      $("#delete-button").css("display", "block");
+    }
+
+    $("#error-radio").css("display", "none");
+    $("#error-items").css("display", "none");
+    $("#error-amount").css("display", "none");
+    $("#error-category1").css("display", "none");
+    $("#error-category2").css("display", "none");
+    $("#success-confirmation").css("display", "none");    
+    $("#success-transaction").css("display", "none");
+
+  });
+
+
+  // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  // [Event] Set saved category name
+  // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  $(window).on("load", async function() {
+
+    const res = await fetch("http://localhost:3000/categories")
+    const categories = await res.json()
+
+    for (let i = 0; i < categories.length; i++) {
+
+      if(categories[i].name !== "(DELETED)"){        
+        $("#category-pulldown").append(
+          '<option value="' + (categories[i].id) + '">' + categories[i].name + "</option>"
+        );      
+      }
+    }
+  });
+
+
+  // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  // [Event] Add new category name
+  // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  $("#add-button").on("click", async () => {
+    const inputName = $("#input-category").val();
+
+    // Get previously registered category information
+    let textArray = [];
+    let originalTexts = $("#category-pulldown").children();
+    for (let i = 0; i < originalTexts.length; i++) {
+      textArray.push(originalTexts.eq(i).text());
+    }
+
+    console.log("textArray:" + textArray);
+    
+    if (inputName != null && inputName != "") {
+      
+      // Check if the new category name has registered
+      if (textArray.indexOf(inputName) === -1) {
+        
+        const res = await fetch(`${baseURL}/categories`, {
+          method: "POST",
+          body: JSON.stringify({"newCategory":`${inputName}`}),
+          headers: {"Content-Type": "application/json"}
+        })
+        if (!res.ok) {
+          throw new Error(`${res.status} - ${res.statusText}`)
+        }
+
+        async function getCategoryInfo() {
+
+          try {
+            const res = await fetch("http://localhost:3000/categories")
+            const categories = await res.json()
+  
+            const newCategory = categories[categories.length - 1];
+            const newValue = newCategory.id;
+            const newText = newCategory.name;
+
+            $("#category-pulldown").append(
+              '<option value="' + newValue + '">' + newText + "</option>"
+            );
+  
+            console.log("newValue:" + newValue);
+            
+          } catch (error) {
+            
+            console.error("Error fetching data:", error);
+          }        
+        }
+
+        getCategoryInfo();
+
+      } else {
+        
+        $("#error-category1").css("display", "none");
+        $("#error-category1").text("'" + inputName + "'" + " has already registered.");
+        $("#error-category1").css("display", "block");
+        messageTimeline
+      	.to(error4, {scale: 1.04, duration: 0.5})
+      	.to(error4, {scale: 1, duration: 0.7});
+
+      }
+      $("#input-category").val("");
+
+    } else {
+
+      $("#error-category2").css("display", "block");
+      messageTimeline
+    	.to(error5, {scale: 1.04, duration: 0.5})
+    	.to(error5, {scale: 1, duration: 0.7});
+
+    }
+
+  });
+
+  // code1: Category delete function
+  // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  // [Event] Delete applicable category
+  // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  $("#delete-button").on("click", async () => {
+    const categoryValue = Number($("#category-pulldown").val());
+
+    if (categoryValue !== 0) {
+      try {
+        const res = await fetch(`${baseURL}/categories/${categoryValue}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ "name": "(DELETED)" }),
+        });
+
+        if (!res.ok) {
+          throw new Error(`${res.status} - ${res.statusText}`);
+        }
+
+        $("#category-pulldown option[value='" + categoryValue + "']").remove();
+        $("#delete-button").css("display", "none");
+        $("#category-pulldown").val("0");
+
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    }
+  });
+  
+  // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  // [Function] Get input information
+  // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  const getInputInfo = () => {
+
+    // Confirm which radio button has been checked
+    const checkedDeposit = $("#radio-deposit").prop("checked");
+    const checkedWithdraw = $("#radio-withdraw").prop("checked");
+    const checkedTransfer = $("#radio-transfer").prop("checked");
+
+    // Get ecah item's information
+    const accountIndex = $("#account-pulldown").val();
+    const accountText = $("#account-pulldown option:selected").text();
+    const fromAccountIndex = $("#from-pulldown").val();
+    const fromAccountText = $("#from-pulldown option:selected").text();
+    const toAccountIndex = $("#to-pulldown").val();
+    const toAccountText = $("#to-pulldown option:selected").text();
+    const categoryIndex = $("#category-pulldown").val();
+    const description = $("#input-description").val();
+    const amount = $("#input-amount").val();
+
+    // Check if there are any unfilled items
+    const accountCondition = accountIndex != null;
+    const fromCondition = fromAccountIndex != null;
+    const toCondition = toAccountIndex != null;
+    const categoryCondition = categoryIndex != null && categoryIndex != "0";
+    const descriptionCondition = description != "";
+    const amountCondition = amount != "";
+
+    // Precondition for deposit and withdraw processes 
+    const depWithCondition = accountCondition && categoryCondition && descriptionCondition && amountCondition;
+    // Precondition for transfer process
+    const transferCondition = fromCondition && toCondition && categoryCondition && descriptionCondition && amountCondition;
+
+    return [
+      checkedDeposit, checkedWithdraw, checkedTransfer, 
+      accountIndex, accountText, fromAccountIndex, fromAccountText, toAccountIndex, toAccountText, 
+      categoryIndex, description, amount, 
+      accountCondition, fromCondition, toCondition, 
+      categoryCondition, descriptionCondition, amountCondition, 
+      depWithCondition, transferCondition
+    ]
+  }
+
+  // code2 Validation function
+  // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  // [Event] Check input validation
+  // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  $("#confirmation-button").on("click", async () => {
+
+    const transactionInfo = getInputInfo();
+    const checkedDeposit = transactionInfo[0];
+    const checkedWithdraw = transactionInfo[1]; 
+    const checkedTransfer = transactionInfo[2]; 
+    const accountText = transactionInfo[4]; 
+    const fromAccountText = transactionInfo[6];
+    const amount = transactionInfo[11];
+    const depWithCondition = transactionInfo[18];
+    const transferCondition = transactionInfo[19];
+    
+    // Validation check1 (radio button)
+    if(!checkedDeposit && !checkedWithdraw && !checkedTransfer){
+
+      $("#error-radio").css("display", "block");
+      $("#error-items").css("display", "none");
+      $("#error-amount").css("display", "none");
+      $("#error-category1").css("display", "none");
+      $("#error-category2").css("display", "none");
+      $("#success-confirmation").css("display", "none");    
+      $("#success-transaction").css("display", "none");
+
+      messageTimeline
+    	.to(error1, {scale: 1.04, duration: 0.5})
+    	.to(error1, {scale: 1, duration: 0.7});
+  
+    }else{
+      
+      // Validation check2 (other items)
+      if(!depWithCondition && !transferCondition){
+
+        $("#error-radio").css("display", "none");
+        $("#error-items").css("display", "block");
+        $("#error-amount").css("display", "none"); 
+        $("#error-category1").css("display", "none");
+        $("#error-category2").css("display", "none");
+        $("#success-confirmation").css("display", "none");   
+        $("#success-transaction").css("display", "none");
+
+        messageTimeline
+        .to(error2, {scale: 1.04, duration: 0.5})
+      	.to(error2, {scale: 1, duration: 0.7});
+    
+      } else {
+
+
+        if(!checkedDeposit){
+
+          // Validation check 3 (transaction amount)  
+          // Amount validation check (For withdraw and transfer processes)
+          // To avoid a negative balance in the account  
+          let accountTags = $(".accounts").children();
+          const transactionAmount = Number(amount);
+          let searchAccountName = "";
+  
+          if(checkedWithdraw){
+            searchAccountName = accountText;
+          } else if(checkedTransfer) {
+            searchAccountName = fromAccountText;
+          }
+
+          for (let i = 0; i < accountTags.length; i++) {
+
+            if(accountTags.eq(i).text().indexOf(searchAccountName) > -1){  
+              const accountInfoText = accountTags.eq(i).text();              
+              const accountAmount = Number(accountInfoText.replace(searchAccountName, ""));     
+              
+              if(!isNaN(accountAmount)){
+                const amountValidation = accountAmount - transactionAmount >= 0;
+    
+                if(!amountValidation){
+                  $("#error-radio").css("display", "none");
+                  $("#error-items").css("display", "none");
+                  $("#error-amount").css("display", "block"); 
+                  $("#error-category1").css("display", "none");
+                  $("#error-category2").css("display", "none");
+                  $("#success-confirmation").css("display", "none");   
+                  $("#success-transaction").css("display", "none");
+          
+                  messageTimeline
+                  .to(error3, {scale: 1.04, duration: 0.5})
+                  .to(error3, {scale: 1, duration: 0.7});
+                  
+                } else {
+                  
+                  $("#error-radio").css("display", "none");
+                  $("#error-items").css("display", "none");
+                  $("#error-amount").css("display", "none"); 
+                  $("#error-category1").css("display", "none");
+                  $("#error-category2").css("display", "none");
+                  $("#success-confirmation").css("display", "block");   
+                  $("#success-transaction").css("display", "none");
+          
+                  $("#execution-button").prop("disabled", false);
+                  
+                }
+              }              
+            }
+          }
+
+        } else {
+          $("#error-radio").css("display", "none");
+          $("#error-items").css("display", "none");
+          $("#error-amount").css("display", "none"); 
+          $("#error-category1").css("display", "none");
+          $("#error-category2").css("display", "none");
+          $("#success-confirmation").css("display", "block");   
+          $("#success-transaction").css("display", "none");
+  
+          $("#execution-button").prop("disabled", false);
+          
+        }
+      }
+    } 
+  })  
+
+  // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  // [Event] Disable "Add transaction" button when retyping input information
+  // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  $(".transaction-input").on("change", function() {
+    $("#execution-button").prop("disabled", true);
+
+    $("#error-radio").css("display", "none");
+    $("#error-items").css("display", "none");
+    $("#error-amount").css("display", "none");  
+    $("#error-category1").css("display", "none");
+    $("#error-category2").css("display", "none");
+    $("#success-confirmation").css("display", "none");
+    $("#success-transaction").css("display", "none");
+
+  })
+
+  // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  // [Event] Execute new transaction
+  // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  $("#execution-button").on("click", async () => {
+  
+    const transactionInfo = getInputInfo();
+    const checkedDeposit = transactionInfo[0];
+    const checkedWithdraw = transactionInfo[1];
+    const checkedTransfer = transactionInfo[2];
+    const accountIndex = transactionInfo[3]; 
+    const fromAccountIndex = transactionInfo[5];
+    const toAccountIndex = transactionInfo[7];
+    const categoryIndex = transactionInfo[9];
+    const description = transactionInfo[10];
+    const amount = transactionInfo[11];
+
+    const transactionData = {
+      newTransaction: {
+        accountId: Number(accountIndex),
+        accountIdFrom: checkedTransfer ? Number(fromAccountIndex) : Number(accountIndex),
+        accountIdTo: checkedTransfer ? Number(toAccountIndex) : Number(accountIndex),
+        type: checkedDeposit ? "Deposit" : checkedWithdraw ? "Withdraw" : "Transfer",
+        amount: Number(amount),
+        categoryId: Number(categoryIndex),
+        description: description,
+      },
+    };
+
+    try {
+      const response = await fetch(`${baseURL}/transactions`, {  
+        method: "POST",
+        headers: {"Content-Type": "application/json",},
+        body: JSON.stringify(transactionData),
+      });
+      if (!response.ok) {
+        console.error("Error:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    } 
+          
+    $("#error-radio").css("display", "none");
+    $("#error-items").css("display", "none");
+    $("#error-amount").css("display", "none"); 
+    $("#error-category1").css("display", "none");
+    $("#error-category2").css("display", "none");
+    $("#success-confirmation").css("display", "none");   
+    $("#success-transaction").css("display", "block");      
+
+    $("#execution-button").prop("disabled", true);
+  })
+
+</script>
